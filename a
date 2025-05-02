@@ -1,0 +1,129 @@
+[33mtag v0.1.0.0[m
+Tagger: Danil12121 <grechishnikovdanil@yandex.ru>
+Date:   Fri May 2 18:13:58 2025 +0300
+
+xcxcxcxc
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEEOeajlF+l6J9yscDwQpAvT0TkrMwFAmgU4UsACgkQQpAvT0Tk
+rMyKSwwAwTvOFMYANx/Z0CfMG2QizJJP9v9B2RszbLZkhe3PLf8C0mkfAPeG8qGj
+932SPT6/reGwMDT1sWaVmWMbvet3J1zmI6E7QT8421jWZ44fONO9kHRaMMNZ12Yq
++PS1zGTtvdFfFo3x/hjLC2RqeQj2vCdKghNx4eC1zMc5YIZ4ljaklGZqvLLb6GRT
+E6pDgJJboaqPXhZnHNuU1fAJJBjq5stNwHWCtTpUNR00Y8fMAsST3ut5aoKfkGCS
+3qNWQRdsuiUIplwyxSNbcFEfF2DRH6atoDNl/mJ3ytIA6w4llfZa2+0/bRsrveKG
+AbzMwyatmm+MGQE0kXmhE9vH90ceqUd5HLP9jTxGE5Od+gCiBBnvzVpFgG+q4J8y
+p+jvcvL/SI5UZDND+MqYcORadvf8NdOGTeIbFRgTWue3PghmKM+LI1G17wiEyDWt
+X9rICKsVX83q2RcZpiAxHfObblDDm1mSfRvKpQFPJdWpHj2VUFXVHlpB9BnutIM/
+Abp/3qPX
+=yY0E
+-----END PGP SIGNATURE-----
+
+[33mcommit dfdca589aff7feda739638ad3451fa0d91a46c34[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;33mtag: [m[1;33mv0.1.0.0[m[33m)[m
+Author: Danil12121 <grechishnikovdanil@yandex.ru>
+Date:   Fri May 2 00:26:45 2025 +0300
+
+    adding Dockerfile
+
+[1mdiff --git a/CMakeLists.txt b/CMakeLists.txt[m
+[1mindex 85fc64e..5be8b06 100644[m
+[1m--- a/CMakeLists.txt[m
+[1m+++ b/CMakeLists.txt[m
+[36m@@ -1,9 +1,9 @@[m
+ cmake_minimum_required(VERSION 3.4)[m
+[31m-[m
+ include("cmake/HunterGate.cmake")[m
+[32m+[m
+ HunterGate([m
+[31m-    URL "https://github.com/cpp-pm/hunter/archive/v0.23.251.tar.gz"[m
+[31m-    SHA1 "5659b15dc0884d4b03dbd95710e6a1fa0fc3258d"[m
+[32m+[m[32m    URL "https://github.com/cpp-pm/hunter/archive/v0.23.308.tar.gz"[m
+[32m+[m[32m    SHA1 "23f1b5a0acffae50fda423388c843a8e7b6e1eb0"[m
+ )[m
+ [m
+ set(CMAKE_CXX_STANDARD 11)[m
+[36m@@ -22,8 +22,7 @@[m [mset(PRINT_VERSION[m
+ set(PRINT_VERSION_STRING "v${PRINT_VERSION}")[m
+ [m
+ hunter_add_package(GTest)[m
+[31m-find_package(GTest CONFIG REQUIRED)[m
+[31m-[m
+[32m+[m[32mfind_package(GTest REQUIRED)[m
+ [m
+ add_library(print STATIC ${CMAKE_CURRENT_SOURCE_DIR}/sources/print.cpp)[m
+ [m
+[36m@@ -44,11 +43,6 @@[m [mif(BUILD_EXAMPLES)[m
+   endforeach(EXAMPLE_SOURCE ${EXAMPLE_SOURCES})[m
+ endif()[m
+ [m
+[31m-add_executable(demo ${CMAKE_CURRENT_SOURCE_DIR}/demo/main.cpp)[m
+[31m-target_link_libraries(demo print)[m
+[31m-install(TARGETS demo RUNTIME DESTINATION bin)[m
+[31m-[m
+[31m-[m
+ install(TARGETS print[m
+     EXPORT print-config[m
+     ARCHIVE DESTINATION lib[m
+[36m@@ -63,13 +57,16 @@[m [mif(BUILD_TESTS)[m
+   [m
+   file(GLOB ${PROJECT_NAME}_TEST_SOURCES tests/*.cpp)[m
+   add_executable(check ${${PROJECT_NAME}_TEST_SOURCES})[m
+[31m-  target_link_libraries(check ${PROJECT_NAME} GTest::main)[m
+[32m+[m[32m  target_link_libraries(check ${PROJECT_NAME} GTest::GTest GTest::Main)[m
+   add_test(NAME check COMMAND check)[m
+ endif()[m
+ [m
+ add_executable(demo ${CMAKE_CURRENT_SOURCE_DIR}/demo/main.cpp)[m
+[32m+[m
+ target_link_libraries(demo print)[m
+[32m+[m
+ install(TARGETS demo RUNTIME DESTINATION bin)[m
+ [m
+[32m+[m[32madd_compile_options(-Wno-error=maybe-uninitialized)[m
+ [m
+ include(CPackConfig.cmake)[m
+[1mdiff --git a/Dockerfile b/Dockerfile[m
+[1mnew file mode 100644[m
+[1mindex 0000000..9b74fb8[m
+[1m--- /dev/null[m
+[1m+++ b/Dockerfile[m
+[36m@@ -0,0 +1,26 @@[m
+[32m+[m[32mFROM ubuntu:24.04[m
+[32m+[m
+[32m+[m
+[32m+[m[32mRUN apt update && apt install -yy gcc g++ cmake curl[m
+[32m+[m
+[32m+[m
+[32m+[m[32mRUN curl -LO https://github.com/Kitware/CMake/releases/download/v3.22.2/cmake-3.22.2-linux-x86_64.tar.gz \[m
+[32m+[m[32m    && tar -xzvf cmake-3.22.2-linux-x86_64.tar.gz \[m
+[32m+[m[32m    && if [ -f /usr/local/man ]; then rm -f /usr/local/man; fi \[m
+[32m+[m[32m    && if [ -d /usr/local/man ]; then rm -rf /usr/local/man; fi \[m
+[32m+[m[32m    && cp -r cmake-3.22.2-linux-x86_64/* /usr/local/ \[m
+[32m+[m[32m    && rm -rf cmake-3.22.2-linux-x86_64*[m[41m [m
+[32m+[m
+[32m+[m
+[32m+[m[32mCOPY . /print/[m
+[32m+[m[32mWORKDIR /print[m
+[32m+[m
+[32m+[m
+[32m+[m[32mRUN cmake -H. -B_build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=_install[m
+[32m+[m[32mRUN cmake --build _build[m
+[32m+[m[32mRUN cmake --build _build --target install[m
+[32m+[m
+[32m+[m[32mENV LOG_PATH /home/logs/log.txt[m
+[32m+[m
+[32m+[m[32mWORKDIR _install/bin[m
+[32m+[m[32mENTRYPOINT ./demo[m
+[1mdiff --git a/LICENSE b/LICENSE[m
+[1mnew file mode 100644[m
+[1mindex 0000000..e69de29[m
+[1mdiff --git a/logs/log.txt b/logs/log.txt[m
+[1mnew file mode 100644[m
+[1mindex 0000000..4146d77[m
+[1m--- /dev/null[m
+[1m+++ b/logs/log.txt[m
+[36m@@ -0,0 +1,5 @@[m
+[32m+[m[32mtext1[m
+[32m+[m[32mtext2[m
+[32m+[m[32mtext3[m
+[32m+[m[32m<C-D>[m
+[32m+[m
